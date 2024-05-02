@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1g0fque" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
+  <bpmn:collaboration id="callActivity">
+    <bpmn:participant id="Participant_0yhua0q" name="Departamento de facturación" processRef="callActivityFactura" />
+  </bpmn:collaboration>
+  <bpmn:process id="callActivityFactura" isExecutable="true" camunda:historyTimeToLive="10">
+    <bpmn:sequenceFlow id="Flow_1xxrtgg" sourceRef="StartEvent_1" targetRef="Activity_1dadly9" />
+    <bpmn:sequenceFlow id="Flow_0ts5pwv" sourceRef="Activity_1dadly9" targetRef="Activity_0oczhrh" />
+    <bpmn:sequenceFlow id="Flow_00y5wgy" sourceRef="Activity_0oczhrh" targetRef="Activity_0xcvhi2" />
+    <bpmn:sequenceFlow id="Flow_0hsjyar" sourceRef="Event_05ibr6z" targetRef="Activity_1gehf5z" />
+    <bpmn:sequenceFlow id="Flow_0wt8vmt" sourceRef="Activity_1gehf5z" targetRef="Event_1mpsed6" />
+    <bpmn:sequenceFlow id="Flow_1q3ptbe" sourceRef="Activity_0xcvhi2" targetRef="Gateway_0usmgby" />
+    <bpmn:sequenceFlow id="Flow_0rpgcpu" sourceRef="Activity_0tji1dq" targetRef="Gateway_04oohuy" />
+    <bpmn:userTask id="Activity_1dadly9" name="Generar factura">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="nombreFactura" label="Nombre del cliente" type="string" defaultValue="${nombre}" />
+          <camunda:formField id="direccionFactura" label="Dirección del cliente" type="string" defaultValue="${direccion}" />
+          <camunda:formField id="numeroFactura" label="Número celular del cliente" type="string" defaultValue="${numero}" />
+          <camunda:formField id="planFactura" label="Plan elehido por el cliente" type="string" defaultValue="${plan}" />
+          <camunda:formField id="precioFactura" label="Valor total de la factura" type="string" defaultValue="${precio}" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xxrtgg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ts5pwv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:task id="Activity_0oczhrh" name="Enviar factura">
+      <bpmn:incoming>Flow_0ts5pwv</bpmn:incoming>
+      <bpmn:outgoing>Flow_00y5wgy</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:startEvent id="StartEvent_1" name="Se genera factura">
+      <bpmn:outgoing>Flow_1xxrtgg</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_0xcvhi2" name="Recibir pago">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="fechaPago" label="Ingrese fecha de pago" type="string" defaultValue="15-05-2024" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00y5wgy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q3ptbe</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="Event_05ibr6z" name="10 días" cancelActivity="false" attachedToRef="Activity_0xcvhi2">
+      <bpmn:outgoing>Flow_0hsjyar</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1ntdb4j">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_1mpsed6" name="Cobro realizado">
+      <bpmn:incoming>Flow_0wt8vmt</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_1gehf5z" name="Realizar cobro extra">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="cobroExtra" type="string" defaultValue="Se ha realizado un cobro adicional en la factura por retraso de pago" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hsjyar</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wt8vmt</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0tji1dq" name="Registrar pago" camunda:type="external" camunda:topic="RegistrarPago">
+      <bpmn:incoming>Flow_0dplwzx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rpgcpu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0usmgby">
+      <bpmn:incoming>Flow_1q3ptbe</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dplwzx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0dplwzx" sourceRef="Gateway_0usmgby" targetRef="Activity_0tji1dq" />
+    <bpmn:exclusiveGateway id="Gateway_04oohuy" name="Se registró el pago?" default="Flow_0vpyg0a">
+      <bpmn:incoming>Flow_0rpgcpu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vpyg0a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_158zlpa</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0fbowg5" sourceRef="Activity_1kdd1uk" targetRef="Gateway_0s4g86q" />
+    <bpmn:sequenceFlow id="Flow_0rzcmj4" sourceRef="Activity_19lpcn1" targetRef="Gateway_0s4g86q" />
+    <bpmn:sequenceFlow id="Flow_0vpyg0a" name="No" sourceRef="Gateway_04oohuy" targetRef="Activity_19lpcn1" />
+    <bpmn:sequenceFlow id="Flow_158zlpa" name="Si" sourceRef="Gateway_04oohuy" targetRef="Activity_1kdd1uk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${pagoGuardado==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1yb61wd" sourceRef="Gateway_0s4g86q" targetRef="Event_00agwz8" />
+    <bpmn:endEvent id="Event_00agwz8" name="Factura generada">
+      <bpmn:incoming>Flow_1yb61wd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_0s4g86q">
+      <bpmn:incoming>Flow_0fbowg5</bpmn:incoming>
+      <bpmn:incoming>Flow_0rzcmj4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yb61wd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_19lpcn1" name="Mostrar registro de pago erroneo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="mostrarPagoErr" label="Hubo un error al registrar el pago" type="boolean" defaultValue="${pagoGuardado}" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0vpyg0a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rzcmj4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1kdd1uk" name="Mostrar registro de pago">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="mostrarPago" label="Se registro correctamente el pago" type="boolean" defaultValue="${pagoGuardado}" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_158zlpa</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fbowg5</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="callActivity">
+      <bpmndi:BPMNShape id="Participant_0yhua0q_di" bpmnElement="Participant_0yhua0q" isHorizontal="true">
+        <dc:Bounds x="200" y="95" width="1309" height="461" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14n1tdw_di" bpmnElement="Activity_1dadly9">
+        <dc:Bounds x="380" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oczhrh_di" bpmnElement="Activity_0oczhrh">
+        <dc:Bounds x="540" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="282" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="256" y="245" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18iuinl_di" bpmnElement="Activity_0xcvhi2">
+        <dc:Bounds x="700" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mpsed6_di" bpmnElement="Event_1mpsed6">
+        <dc:Bounds x="1082" y="332" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1061" y="375" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ih0ma9_di" bpmnElement="Activity_1gehf5z">
+        <dc:Bounds x="930" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0a2l62a_di" bpmnElement="Activity_0tji1dq">
+        <dc:Bounds x="910" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0usmgby_di" bpmnElement="Gateway_0usmgby" isMarkerVisible="true">
+        <dc:Bounds x="825" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_04oohuy_di" bpmnElement="Gateway_04oohuy" isMarkerVisible="true">
+        <dc:Bounds x="1075" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1135" y="206" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_00agwz8_di" bpmnElement="Event_00agwz8">
+        <dc:Bounds x="1432" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1407" y="245" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0s4g86q_di" bpmnElement="Gateway_0s4g86q" isMarkerVisible="true">
+        <dc:Bounds x="1365" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0x3mxo1_di" bpmnElement="Activity_19lpcn1">
+        <dc:Bounds x="1210" y="110" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1md4ql4_di" bpmnElement="Activity_1kdd1uk">
+        <dc:Bounds x="1210" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05ibr6z_di" bpmnElement="Event_05ibr6z">
+        <dc:Bounds x="762" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="731" y="285" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1xxrtgg_di" bpmnElement="Flow_1xxrtgg">
+        <di:waypoint x="318" y="220" />
+        <di:waypoint x="380" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ts5pwv_di" bpmnElement="Flow_0ts5pwv">
+        <di:waypoint x="480" y="220" />
+        <di:waypoint x="540" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00y5wgy_di" bpmnElement="Flow_00y5wgy">
+        <di:waypoint x="640" y="220" />
+        <di:waypoint x="700" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hsjyar_di" bpmnElement="Flow_0hsjyar">
+        <di:waypoint x="780" y="278" />
+        <di:waypoint x="780" y="350" />
+        <di:waypoint x="930" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wt8vmt_di" bpmnElement="Flow_0wt8vmt">
+        <di:waypoint x="1030" y="350" />
+        <di:waypoint x="1082" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q3ptbe_di" bpmnElement="Flow_1q3ptbe">
+        <di:waypoint x="800" y="220" />
+        <di:waypoint x="825" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rpgcpu_di" bpmnElement="Flow_0rpgcpu">
+        <di:waypoint x="1010" y="220" />
+        <di:waypoint x="1075" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dplwzx_di" bpmnElement="Flow_0dplwzx">
+        <di:waypoint x="875" y="220" />
+        <di:waypoint x="910" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fbowg5_di" bpmnElement="Flow_0fbowg5">
+        <di:waypoint x="1310" y="290" />
+        <di:waypoint x="1390" y="290" />
+        <di:waypoint x="1390" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rzcmj4_di" bpmnElement="Flow_0rzcmj4">
+        <di:waypoint x="1310" y="150" />
+        <di:waypoint x="1390" y="150" />
+        <di:waypoint x="1390" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vpyg0a_di" bpmnElement="Flow_0vpyg0a">
+        <di:waypoint x="1100" y="195" />
+        <di:waypoint x="1100" y="150" />
+        <di:waypoint x="1210" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1108" y="170" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_158zlpa_di" bpmnElement="Flow_158zlpa">
+        <di:waypoint x="1100" y="245" />
+        <di:waypoint x="1100" y="290" />
+        <di:waypoint x="1210" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1110" y="264" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yb61wd_di" bpmnElement="Flow_1yb61wd">
+        <di:waypoint x="1415" y="220" />
+        <di:waypoint x="1432" y="220" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,65 @@
+{
+  "components": [
+    {
+      "text": "# Solicitud del servicio",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0dbx8rz",
+        "columns": null
+      },
+      "id": "Field_0b7rei0"
+    },
+    {
+      "label": "Nombre del cliente*",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_00nj2ve",
+        "columns": null
+      },
+      "id": "Field_0izo6q4",
+      "key": "nombreForm",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "Stiven"
+    },
+    {
+      "label": "Dirección del cliente*",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_12jzv2z",
+        "columns": null
+      },
+      "id": "Field_06m6bbh",
+      "key": "direccionForm",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "Catumare"
+    },
+    {
+      "label": "Número del cliente*",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_10olyy8",
+        "columns": null
+      },
+      "id": "Field_0mt0sp7",
+      "key": "numeroForm",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": "3118125048"
+    }
+  ],
+  "type": "default",
+  "id": "formSolicitudServicio",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.22.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.21.0",
+  "schemaVersion": 16
+}

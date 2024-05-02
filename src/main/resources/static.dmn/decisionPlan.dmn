@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_0qdwrn" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.22.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <decision id="decisionPlan" name="decision de plan" camunda:historyTimeToLive="0">
+    <decisionTable id="DecisionTable_0cf1lrh">
+      <input id="Input_1" label="Plan" camunda:inputVariable="plan">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Salida" name="precio" typeRef="string" />
+      <rule id="DecisionRule_0mvg7q6">
+        <inputEntry id="UnaryTests_1yyb8q9">
+          <text>"Plan1:Tv"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08i8n18">
+          <text>"20000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0vros6t">
+        <inputEntry id="UnaryTests_1xcjijr">
+          <text>"Plan2:Tv"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0rv703t">
+          <text>"30000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0e85c3z">
+        <inputEntry id="UnaryTests_0g32f3p">
+          <text>"Plan3:Tv"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_14k5nny">
+          <text>"40000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1nd9b2x">
+        <inputEntry id="UnaryTests_1tfvzb4">
+          <text>"Plan1:Internet"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ormnen">
+          <text>"104000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0e8t33k">
+        <inputEntry id="UnaryTests_1q2h8yc">
+          <text>"Plan2:Internet"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1saf6un">
+          <text>"106000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0lovx5u">
+        <inputEntry id="UnaryTests_1bro3h3">
+          <text>"Plan3:Internet"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0votpde">
+          <text>"108000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_07ho4ns">
+        <inputEntry id="UnaryTests_0djcelz">
+          <text>"Plan1:TriplePlay"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1seljgi">
+          <text>"125000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_011gi4b">
+        <inputEntry id="UnaryTests_0qfhuhz">
+          <text>"Plan2:TriplePlay"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1pmffb8">
+          <text>"135000"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1tk6eo6">
+        <inputEntry id="UnaryTests_1m4dzp5">
+          <text>"Plan3:TriplePlay"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08e6xsf">
+          <text>"145000"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="decisionPlan">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
